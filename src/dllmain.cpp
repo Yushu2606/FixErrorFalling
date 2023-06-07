@@ -4,14 +4,13 @@
 #pragma comment(lib, "../SDK/lib/LiteLoader.lib")
 
 #include <llapi/HookAPI.h>
-#include <llapi/mc/HeavyBlock.hpp>
 #include <llapi/mc/Block.hpp>
 #include <llapi/mc/BlockSource.hpp>
 #include <llapi/mc/BlockPos.hpp>
 #include <llapi/mc/Level.hpp>
 
-TInstanceHook(void, "?startFalling@HeavyBlock@@MEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVBlock@@_N@Z",
-			  HeavyBlock, class BlockSource& a2, class BlockPos const& a3, class Block const& a4, bool a5) {
+TClasslessInstanceHook(void, "?startFalling@FallingBlock@@MEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVBlock@@_N@Z",
+					   class BlockSource& a2, class BlockPos const& a3, class Block const& a4, bool a5) {
 	if (!Level::getBlock(a3.add(0, -1), &a2)->isAir())
 		return;
 	original(this, a2, a3, a4, a5);
