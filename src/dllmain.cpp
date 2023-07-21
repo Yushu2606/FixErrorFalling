@@ -4,14 +4,14 @@
 #pragma comment(lib, "../SDK/lib/LiteLoader.lib")
 
 #include <llapi/HookAPI.h>
-#include <llapi/mc/Block.hpp>
+#include <llapi/mc/FallingBlock.hpp>
 #include <llapi/mc/BlockSource.hpp>
 #include <llapi/mc/BlockPos.hpp>
-#include <llapi/mc/Level.hpp>
 
-TClasslessInstanceHook(void, "?startFalling@FallingBlock@@MEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVBlock@@_N@Z",
-					   class BlockSource& a2, class BlockPos const& a3, class Block const& a4, bool a5) {
-	if (!Level::getBlock(a3.add(0, -1), &a2)->isAir())
-		return;
-	original(this, a2, a3, a4, a5);
+TClasslessInstanceHook(bool, "?isFreeToFall@FallingBlock@@UEBA_NAEAVBlockSource@@AEBVBlockPos@@@Z",
+                       BlockSource& a2, BlockPos const& a3) {
+    bool result = original(this, a2, a3);
+    if (result && a2.getBlock(a3.x, a3.y - 1, a3.z).getTypeName() == "minecraft:big_dripleaf")
+        return false;
+    return result;
 }
