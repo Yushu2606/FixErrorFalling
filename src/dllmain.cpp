@@ -7,6 +7,7 @@
 #include <llapi/mc/FallingBlock.hpp>
 #include <llapi/mc/BlockSource.hpp>
 #include <llapi/mc/BlockPos.hpp>
+#include <llapi/mc/Block.hpp>
 
 TClasslessInstanceHook(bool, "?isFreeToFall@FallingBlock@@UEBA_NAEAVBlockSource@@AEBVBlockPos@@@Z",
                        BlockSource& a2, BlockPos const& a3) {
