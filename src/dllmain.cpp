@@ -4,15 +4,26 @@
 #pragma comment(lib, "../SDK/lib/LiteLoader.lib")
 
 #include <llapi/HookAPI.h>
-#include <llapi/mc/FallingBlock.hpp>
-#include <llapi/mc/BlockSource.hpp>
-#include <llapi/mc/BlockPos.hpp>
+#include <llapi/mc/BlockLegacy.hpp>
+#include <llapi/mc/Actor.hpp>
+#include <llapi/mc/Level.hpp>
+#include <llapi/mc/Vec3.hpp>
 #include <llapi/mc/Block.hpp>
 
-TClasslessInstanceHook(bool, "?isFreeToFall@FallingBlock@@UEBA_NAEAVBlockSource@@AEBVBlockPos@@@Z",
-                       BlockSource& a2, BlockPos const& a3) {
-    bool result = original(this, a2, a3);
-    if (result && a2.getBlock(a3.x, a3.y - 1, a3.z).getTypeName() == "minecraft:big_dripleaf")
-        return false;
+std::array<std::string, 2> block_list{
+    "minecraft:water",
+    "minecraft:big_dripleaf"
+};
+
+TInstanceHook(bool, "?shouldStopFalling@BlockLegacy@@UEBA_NAEAVActor@@@Z", BlockLegacy, Actor* a2) {
+    bool result = original(this, a2);
+    if (result) {
+        Vec3 const& pos = a2->getPosition();
+        Block* block = Level::getBlock(pos.sub(Vec3(0, 1, 0)), a2->getDimensionId());
+        std::string name = block->getTypeName();
+        if (std::find(block_list.begin(), block_list.end(), name) != block_list.end()) {
+            return false;
+        }
+    }
     return result;
 }
